@@ -15,7 +15,7 @@
     "pug": "^3.0.2"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node index.js"
+    "dev": "nodemon --exec babel-node src/server.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
