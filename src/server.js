@@ -29,6 +29,12 @@ app.use( ( req, res, next ) => {
     } );
 } );
 
+app.get( "/add-one", ( req, res, next ) => {
+    req.session.patato += 1;
+    return res.send( `${ req.session.id }\n${ req.session.patato }` );
+} );
+
+
 //routers
 app.use( "/", rootRouter );
 app.use( "/users", userRouter );
