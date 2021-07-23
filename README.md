@@ -15,19 +15,19 @@ Cloning Youtube with Vanilla and NodeJS
 - [ ] Video Detail
 - [ ] Edit Video
 
-
+<Root Router>
 / -> Home
 /join -> Join
 /login -> Login
 /search -> Search
 
-
+<User Router>
 /users/:id -> See User
 /users/logout -> Log out
 /users/edit -> Edit My Profile
 /users/remove -> Remove My user
 
-
+<Video Router>
 /videos/:id -> Watch Video
 /videos/:id/edit -> Edit Video
 /videos/:id/delete -> Delete Video
