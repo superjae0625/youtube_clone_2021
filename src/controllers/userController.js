@@ -149,8 +149,48 @@ export const getEdit = ( req, res ) => {
     return res.render( "edit-profile", { pageTitle: "Edit Profile" } );
 };
 
-export const postEdit = ( req, res ) => {
-    return res.render( "edit-profile", { pageTitle: "Edit Profile" } );
+export const postEdit = async ( req, res ) => {
+    const { session: { user: { _id }, }, body: { name, email, username, location }, file } = req;
+
+
+
+    const updatedUser = await User.findByIdAndUpdate( _id,
+        {
+            name,
+            email,
+            username,
+            location,
+        },
+        { new: true } );
+    req.session.user = updatedUser;
+    return res.redirect( "/users/edit" );
+};
+
+
+export const getChangePassword = async ( req, res ) => {
+    return res.render( "users/change-password", { pageTitle: "Change Password" } );
+};
+
+export const postChangePassword = async ( req, res ) => {
+
+    const { session: { user: { _id }, }, body: { oldPassword, newPassword, newPasswordConfirmation }, } = req;
+    const user = await User.findById( _id );
+    const ok = await bcrypt.compare( oldPassword, user.password );
+    if ( !ok ) {
+        return res.status( 400 ).render( "users/change-password", { pageTitle: "Change Password", errorMessage: "The current password is incorrect" } );
+    }
+
+    if ( newPassword !== newPasswordConfirmation ) {
+        return res.status( 400 ).render( "users/change-password", { pageTitle: "Change Password", errorMessage: "The password does not match" } );
+    }
+    // const user = await User.findById( _id  ); -> 위에 같은 코드 지우고 세션을 업데이트 할 경우 사용
+    console.log( "Old Password: ", user.password );
+    user.password = newPassword;
+    console.log( "New Unhashed Password: ", user.password );
+    await user.save();
+    console.log( "New Hashed Password: ", user.password );
+
+    return res.redirect( "/users/logout" );
 };
 
 export const see = ( req, res ) => res.send( "See User" );
