@@ -1,4 +1,4 @@
-require( "dotenv" ).config();
+
 
 import express from "express";
 import morgan from "morgan";
@@ -46,6 +46,7 @@ app.get( "/add-one", ( req, res, next ) => {
 
 
 app.use( localsMiddleware );
+app.use( "/uploads", express.static( "uploads" ) );
 
 //routers
 app.use( "/", rootRouter );
