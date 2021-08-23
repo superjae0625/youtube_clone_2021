@@ -119,3 +119,17 @@ export const search = async ( req, res ) => {
     }
     return res.render( "search", { pageTitle: "Search", videos } );
 };
+
+
+export const registerView = async ( req, res ) => {
+    const { id } = req.params;
+    const video = await Video.findById( id );
+    if ( !video ) {
+        //if not find the video
+        return res.sendStatus( 404 );
+    }
+    video.meta.views = video.meta.views + 1;
+    await video.save();
+    //ok를 뜻함 200
+    return res.sendStatus( 200 );
+};
