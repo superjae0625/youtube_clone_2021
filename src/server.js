@@ -56,4 +56,11 @@ app.use( "/users", userRouter );
 app.use( "/videos", videoRouter );
 app.use( "/api", apiRouter );
 
+
+app.use(
+    "/static",
+    express.static( "assets" ),
+    express.static( "node_modules/@ffmpeg/core/dist" )
+);
+
 export default app;
