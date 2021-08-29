@@ -15,6 +15,7 @@
     "core-js": "^3.11.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-flash": "0.0.2",
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
     "mongoose": "^5.13.2",
@@ -25,11 +26,16 @@
     "regenerator-runtime": "^0.13.9"
   },
   "scripts": {
+    "start": "node build/init.js",
+    "build": "npm run build:server && npm run build:assets",
+    "build:server": "babel src -d build",
+    "build:assets": "webpack --mode=production",
     "dev:server": "nodemon",
-    "dev:assets": "webpack"
+    "dev:assets": "webpack --mode=development -w"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
     "@babel/node": "^7.14.2",
     "@babel/preset-env": "^7.14.2",
     "babel-loader": "^8.2.2",

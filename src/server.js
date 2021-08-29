@@ -1,8 +1,7 @@
-
-
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
@@ -18,6 +17,7 @@ app.set( "view engine", "pug" );
 app.set( "views", process.cwd() + "/src/views" );
 app.use( logger );
 app.use( express.urlencoded( { extended: true } ) );
+app.use( express.json() );
 
 //sending browser a cookie
 app.use(
@@ -45,7 +45,7 @@ app.get( "/add-one", ( req, res, next ) => {
     return res.send( `${ req.session.id }\n${ req.session.patato }` );
 } );
 
-
+app.use( flash() );
 app.use( localsMiddleware );
 app.use( "/uploads", express.static( "uploads" ) );
 app.use( "/assets", express.static( "assets" ) );

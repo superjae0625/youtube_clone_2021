@@ -142,6 +142,7 @@ export const finishGithubLogin = async ( req, res ) => {
 
 export const logout = ( req, res ) => {
     req.session.destroy();
+    req.flash( "info", "Bye Bye" );
     return res.redirect( "/" );
 };
 
@@ -194,10 +195,10 @@ export const postChangePassword = async ( req, res ) => {
     // const user = await User.findById( _id  ); -> 위에 같은 코드 지우고 세션을 업데이트 할 경우 사용
     console.log( "Old Password: ", user.password );
     user.password = newPassword;
-    console.log( "New Unhashed Password: ", user.password );
+    // console.log( "New Unhashed Password: ", user.password );
     await user.save();
-    console.log( "New Hashed Password: ", user.password );
-
+    // console.log( "New Hashed Password: ", user.password );
+    req.flash( "info", "Password updated" );
     return res.redirect( "/users/logout" );
 };
 

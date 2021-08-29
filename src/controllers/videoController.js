@@ -1,4 +1,5 @@
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 import User from "../models/User";
 
 export const home = async ( req, res ) => {
@@ -16,7 +17,8 @@ export const watch = async ( req, res ) => {
     // console.log( "Show video", id );
 
     // console.log( id );
-    const video = await Video.findById( id ).populate( "owner" );
+    const video = await Video.findById( id ).populate( "owner" ).populate( "comments" );
+    console.log( video );
     // console.log( video );
 
     if ( !video ) {
@@ -37,6 +39,7 @@ export const getEdit = async ( req, res ) => {
     }
     console.log( typeof video.owner, typeof _id );
     if ( String( video.owner ) !== String( _id ) ) {
+        req.flash( "error", "Not Authorized" );
         return res.status( 403 ).redirect( "/" );
     }
     return res.render( "edit", { pageTitle: `Editing ${ video.title }`, video } );
@@ -52,6 +55,7 @@ export const postEdit = async ( req, res ) => {
         //not working above 404 code
     }
     if ( String( video.owner ) !== String( _id ) ) {
+        req.flash( "error", "You are not the owner of the video" );
         return res.status( 403 ).redirect( "/" );
     }
     await video.findByIdAndUpdate( id, {
@@ -60,7 +64,8 @@ export const postEdit = async ( req, res ) => {
     // video.title = title;
     // video.description = description;
     // video.hashtags = hashtags.split( "," ).map( ( word ) => word.startsWith( '#' ) ? word : `#${ word }` );
-    await video.save();
+    // await video.save();
+    req.flash( "success", "Changes Saved" );
     return res.redirect( `/videos/${ id }` );
 };
 
@@ -71,7 +76,7 @@ export const getUpload = ( req, res ) => {
 export const postUpload = async ( req, res ) => {
     const { user: { _id } } = req.session;
     const { video, thumb } = req.files;
-    console.log( video, thumb );
+    // console.log( video, thumb );
     //add a video to the videos array
     const { title, description, hashtags } = req.body;
     try {
@@ -134,4 +139,24 @@ export const registerView = async ( req, res ) => {
     await video.save();
     //ok를 뜻함 200
     return res.sendStatus( 200 );
+};
+
+export const createComment = async ( req, res ) => {
+    const {
+        session: { user },
+        body: { text },
+        params: { id },
+    } = req;
+    const video = await Video.findById( id );
+    if ( !video ) {
+        return res.sendStatus( 404 );
+    }
+    const comment = await Comment.create( {
+        text,
+        owner: user._id,
+        video: id,
+    } );
+    video.comments.push( comment._id );
+    video.save();
+    return res.status( 201 ).json( { newCommentId: comment._id } );
 };
